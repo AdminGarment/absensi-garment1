@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Absensi QR Garmen</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<body>
+  <div class="container">
+    <h2>Absensi Karyawan</h2>
+
+    <label>nik</label>
+    <input id="NIK" placeholder="Masukkan NIK">
+
+    <label>nama</label>
+    <input id="NAMA" placeholder="Nama Lengkap">
+
+    <label>departemen</label>
+    <select id="DEPARTEMEN">
+      <option>KANTOR PRODUKSI</option>
+      <option>PERSIAPAN</option>
+      <option>ACCESORIES</option>
+      <option>QC</option>
+      <option>MEKANIK</option>
+      <option>KEUANGAN</option>
+    </select>
+
+    <label>Line Produksi</label>
+    <input id="line" placeholder="Contoh: Line A">
+
+    <div class="button-group">
+      <button class="btn-masuk" onclick="absen('masuk')">
+        Absen Masuk
+      </button>
+      <button class="btn-pulang" onclick="absen('pulang')">
+        Absen Pulang
+      </button>
+    </div>
+
+    <div id="status" class="status"></div>
+
+    <div class="footer">
+      Absensi QR • GARMENT AL-ITIHAAD<br>
+      Tanjaknangsi | Pagerageung | Tasikmalaya
+    </div>
+  </div>
+</body>
+
+
+
+<script src="app.js"></script>
+</body>
+</html>

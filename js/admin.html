@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Absensi QR</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 420px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 10px;
+      padding: 25px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      color: #2c3e50;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      background: #3498db;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #2980b9;
+    }
+
+    #info {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #555;
+    }
+
+    .qr-box {
+      margin-top: 20px;
+    }
+
+    .qr-box img {
+      width: 260px;
+      height: 260px;
+      border: 1px solid #ddd;
+      padding: 10px;
+      background: #fff;
+    }
+
+    .footer {
+      margin-top: 20px;
+      font-size: 12px;
+      color: #999;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h1>Admin Absensi QR</h1>
+
+    <button onclick="generateQR()">Generate QR Absensi</button>
+
+    <div id="info">QR belum dibuat</div>
+
+    <div class="qr-box">
+      <img id="qr" alt="QR Code akan muncul di sini" />
+    </div>
+
+    <div class="footer">
+      Sistem Absensi Pabrik Garmen<br>
+      1 Shift • Multi Line Produksi
+    </div>
+  </div>
+
+  <script>
+    /* ===============================
+       CONFIG WAJIB
+       =============================== */
+
+    // URL WEB APP GOOGLE APPS SCRIPT
+    const API_ENDPOINT =
+      'https://script.google.com/macros/s/AKfycbxpeeFW2JV2G9uYLGP8YDtzMIJ35I4sz6H7gMsjdNxPaCVU0hXbca-aGYTDFns4pSTb/exec';
+
+    // URL HALAMAN ABSENSI KARYAWAN
+    const FRONTEND_URL =
+      'https://absengarment.netlify.app/'; // ⬅️ GANTI WAJIB
+
+    /* ===============================
+       GENERATE QR
+       =============================== */
+    function generateQR() {
+      document.getElementById('info').innerText = 'Generating QR...';
+
+      fetch(API_ENDPOINT, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          action: 'generateQR'
+        })
+      })
+      .then(response => response.json())
+      .then(result => {
+        if (result.status !== 'ok') {
+          alert(result.message || 'Gagal generate QR');
+          return;
+        }
+
+        const token = result.data.token;
+        const expired = new Date(result.data.expired);
+
+        // ✅ QR LANGSUNG KE FRONTEND
+        const absenURL = `${FRONTEND_URL}?token=${token}`;
+
+        const qrURL =
+          'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' +
+          encodeURIComponent(absenURL);
+
+        document.getElementById('qr').src = qrURL;
+        document.getElementById('info').innerText =
+          'QR aktif sampai: ' + expired.toLocaleTimeString();
+      })
+      .catch(error => {
+        alert('Error koneksi: ' + error.message);
+      });
+    }
+  </script>
+
+</body>
+</html>
